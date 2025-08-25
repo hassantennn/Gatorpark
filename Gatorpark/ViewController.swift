@@ -83,6 +83,7 @@ class ViewController: UIViewController {
         }
 
         addZoomButtons()
+        addNearestGarageButton()
     }
 
     // MARK: - Setup
@@ -202,6 +203,17 @@ class ViewController: UIViewController {
         view.addSubview(makeBlurContainer(for: zoomOutButton, frame: zoomOutFrame, cornerRadius: 8))
     }
 
+    private func addNearestGarageButton() {
+        let button = UIButton(type: .system)
+        button.setTitle("Nearest", for: .normal)
+        button.tintColor = .white
+        button.backgroundColor = UIColor(red: 0, green: 0, blue: 0.5, alpha: 1.0)
+        button.addTarget(self, action: #selector(findNearestGarage), for: .touchUpInside)
+
+        let frame = CGRect(x: view.bounds.width - 90, y: 220, width: 70, height: 40)
+        view.addSubview(makeBlurContainer(for: button, frame: frame, cornerRadius: 8))
+    }
+
     private func makeBlurContainer(for button: UIButton, frame: CGRect, cornerRadius: CGFloat) -> UIView {
         if #available(iOS 13.0, *) {
             let blur = UIVisualEffectView(effect: UIBlurEffect(style: .systemChromeMaterialDark))
@@ -232,6 +244,38 @@ class ViewController: UIViewController {
         r.span.latitudeDelta *= 2
         r.span.longitudeDelta *= 2
         mapView.setRegion(r, animated: true)
+    }
+
+    @objc private func findNearestGarage() {
+        guard let userLocation = locationManager.location else {
+            showAlert(title: "Location Unavailable", message: "Unable to determine current location.")
+            return
+        }
+
+        let openGarages = allGarages.filter { $0.isOpen }
+        guard let nearest = openGarages.min(by: { first, second in
+            let firstLoc = CLLocation(latitude: first.coordinate.latitude, longitude: first.coordinate.longitude)
+            let secondLoc = CLLocation(latitude: second.coordinate.latitude, longitude: second.coordinate.longitude)
+            return userLocation.distance(from: firstLoc) < userLocation.distance(from: secondLoc)
+        }) else {
+            showAlert(title: "No Open Garages", message: "There are no open garages available.")
+            return
+        }
+
+        garages = allGarages
+        addGaragePins(fitAll: false)
+
+        let region = MKCoordinateRegion(center: nearest.coordinate,
+                                        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+        mapView.setRegion(region, animated: true)
+
+        if let annotation = mapView.annotations.first(where: {
+            ($0 as? GarageAnnotation)?.garage.id == nearest.id
+        }) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                self.mapView.selectAnnotation(annotation, animated: true)
+            }
+        }
     }
 
     // MARK: - Notifications
