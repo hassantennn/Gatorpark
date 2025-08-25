@@ -308,10 +308,13 @@ extension ViewController: CLLocationManagerDelegate {
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
-        let region = MKCoordinateRegion(center: location.coordinate,
-                                        latitudinalMeters: 500,
-                                        longitudinalMeters: 500)
-        mapView.setRegion(region, animated: true)
+        // Only recenter the map if we're actively following the user.
+        if mapView.userTrackingMode == .follow || mapView.userTrackingMode == .followWithHeading {
+            let region = MKCoordinateRegion(center: location.coordinate,
+                                            latitudinalMeters: 500,
+                                            longitudinalMeters: 500)
+            mapView.setRegion(region, animated: true)
+        }
         print("📍 User location:", location.coordinate)
     }
 
