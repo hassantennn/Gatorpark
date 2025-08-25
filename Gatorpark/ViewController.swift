@@ -101,7 +101,7 @@ class ViewController: UIViewController {
         }
 
         let region = MKCoordinateRegion(
-            center: CLLocationCoordinate2D(latitude: 29.6467, longitude: -82.3481),
+            center: CLLocationCoordinate2D(latitude: 29.6396, longitude: -82.3496),
             span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2)
         )
         mapView.setRegion(region, animated: true)
