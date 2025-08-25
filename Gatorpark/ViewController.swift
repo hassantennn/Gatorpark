@@ -84,7 +84,6 @@ class ViewController: UIViewController {
 
         addZoomButtons()
         addNearestGarageButton()
-        addLocateButton()
     }
 
     // MARK: - Setup
@@ -212,15 +211,6 @@ class ViewController: UIViewController {
         button.addTarget(self, action: #selector(findNearestGarage), for: .touchUpInside)
 
         let frame = CGRect(x: view.bounds.width - 90, y: 220, width: 70, height: 40)
-        view.addSubview(makeBlurContainer(for: button, frame: frame, cornerRadius: 8))
-    }
-
-    private func addLocateButton() {
-        let button = MKUserTrackingButton(mapView: mapView)
-        button.tintColor = .white
-        button.backgroundColor = UIColor(red: 0, green: 0, blue: 0.5, alpha: 1.0)
-
-        let frame = CGRect(x: view.bounds.width - 60, y: 270, width: 40, height: 40)
         view.addSubview(makeBlurContainer(for: button, frame: frame, cornerRadius: 8))
     }
 
