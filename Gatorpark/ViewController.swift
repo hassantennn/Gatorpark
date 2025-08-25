@@ -26,7 +26,6 @@ class ViewController: UIViewController {
 
     // MARK: - Location
     private let locationManager = CLLocationManager()
-    private let defaultCoordinate = CLLocationCoordinate2D(latitude: 29.6151744, longitude: -82.3552497)
 
     // MARK: - Data
     var garages: [Garage] = []
@@ -102,14 +101,14 @@ class ViewController: UIViewController {
         }
 
         let region = MKCoordinateRegion(
-            center: defaultCoordinate,
+            center: CLLocationCoordinate2D(latitude: 29.6396, longitude: -82.3496),
             span: MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2)
         )
         mapView.setRegion(region, animated: true)
 
         let boundaryPoints = [
             CLLocationCoordinate2D(latitude: 29.7050, longitude: -82.3900),
-            CLLocationCoordinate2D(latitude: 29.6000, longitude: -82.2950)
+            CLLocationCoordinate2D(latitude: 29.6400, longitude: -82.2950)
         ]
         let mapPoints = boundaryPoints.map { MKMapPoint($0) }
         let xs = mapPoints.map { $0.x }
@@ -128,7 +127,7 @@ class ViewController: UIViewController {
         )
 
         mapView.delegate = self
-        mapView.showsUserLocation = false
+        mapView.showsUserLocation = true
     }
 
     private func setupSearchBar() {
@@ -316,10 +315,8 @@ extension ViewController: CLLocationManagerDelegate {
         switch manager.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse:
             print("✅ Location authorized")
-            let region = MKCoordinateRegion(center: defaultCoordinate,
-                                            latitudinalMeters: 500,
-                                            longitudinalMeters: 500)
-            mapView.setRegion(region, animated: true)
+            manager.startUpdatingLocation()
+            mapView.setUserTrackingMode(.follow, animated: true)
         case .denied, .restricted:
             print("❌ Location denied")
         case .notDetermined:
@@ -330,11 +327,12 @@ extension ViewController: CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let region = MKCoordinateRegion(center: defaultCoordinate,
+        guard let location = locations.last else { return }
+        let region = MKCoordinateRegion(center: location.coordinate,
                                         latitudinalMeters: 500,
                                         longitudinalMeters: 500)
         mapView.setRegion(region, animated: true)
-        print("📍 Using default location:", defaultCoordinate)
+        print("📍 User location:", location.coordinate)
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
