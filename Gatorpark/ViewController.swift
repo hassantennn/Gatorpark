@@ -84,6 +84,7 @@ class ViewController: UIViewController {
 
         addZoomButtons()
         addNearestGarageButton()
+        addUserTrackingButton()
     }
 
     // MARK: - Setup
@@ -214,21 +215,30 @@ class ViewController: UIViewController {
         view.addSubview(makeBlurContainer(for: button, frame: frame, cornerRadius: 8))
     }
 
-    private func makeBlurContainer(for button: UIButton, frame: CGRect, cornerRadius: CGFloat) -> UIView {
+    private func addUserTrackingButton() {
+        let trackingButton = MKUserTrackingButton(mapView: mapView)
+        trackingButton.tintColor = .white
+        trackingButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0.5, alpha: 1.0)
+
+        let frame = CGRect(x: view.bounds.width - 60, y: 270, width: 40, height: 40)
+        view.addSubview(makeBlurContainer(for: trackingButton, frame: frame, cornerRadius: 8))
+    }
+
+    private func makeBlurContainer(for control: UIView, frame: CGRect, cornerRadius: CGFloat) -> UIView {
         if #available(iOS 13.0, *) {
             let blur = UIVisualEffectView(effect: UIBlurEffect(style: .systemChromeMaterialDark))
             blur.frame = frame
             blur.layer.cornerRadius = cornerRadius
             blur.clipsToBounds = true
             blur.overrideUserInterfaceStyle = .dark
-            button.frame = blur.bounds
-            blur.contentView.addSubview(button)
+            control.frame = blur.bounds
+            blur.contentView.addSubview(control)
             return blur
         } else {
-            button.frame = frame
-            button.backgroundColor = UIColor(red: 0, green: 0, blue: 0.5, alpha: 1.0)
-            button.layer.cornerRadius = cornerRadius
-            return button
+            control.frame = frame
+            control.backgroundColor = UIColor(red: 0, green: 0, blue: 0.5, alpha: 1.0)
+            control.layer.cornerRadius = cornerRadius
+            return control
         }
     }
 
