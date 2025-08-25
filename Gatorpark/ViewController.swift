@@ -179,6 +179,7 @@ class ViewController: UIViewController {
 
     private func setupLocationManager() {
         locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
     }
 
@@ -315,6 +316,7 @@ extension ViewController: CLLocationManagerDelegate {
         case .authorizedAlways, .authorizedWhenInUse:
             print("✅ Location authorized")
             manager.startUpdatingLocation()
+            mapView.setUserTrackingMode(.follow, animated: true)
         case .denied, .restricted:
             print("❌ Location denied")
         case .notDetermined:
@@ -326,6 +328,10 @@ extension ViewController: CLLocationManagerDelegate {
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
+        let region = MKCoordinateRegion(center: location.coordinate,
+                                        latitudinalMeters: 500,
+                                        longitudinalMeters: 500)
+        mapView.setRegion(region, animated: true)
         print("📍 User location:", location.coordinate)
     }
 
