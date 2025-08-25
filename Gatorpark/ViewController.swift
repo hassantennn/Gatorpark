@@ -106,26 +106,6 @@ class ViewController: UIViewController {
         )
         mapView.setRegion(region, animated: true)
 
-        let boundaryPoints = [
-            CLLocationCoordinate2D(latitude: 29.7050, longitude: -82.3900),
-            CLLocationCoordinate2D(latitude: 29.6400, longitude: -82.2950)
-        ]
-        let mapPoints = boundaryPoints.map { MKMapPoint($0) }
-        let xs = mapPoints.map { $0.x }
-        let ys = mapPoints.map { $0.y }
-        let boundaryRect = MKMapRect(
-            x: xs.min()!,
-            y: ys.min()!,
-            width: xs.max()! - xs.min()!,
-            height: ys.max()! - ys.min()!
-        )
-        mapView.setCameraBoundary(MKMapView.CameraBoundary(mapRect: boundaryRect), animated: false)
-        mapView.setCameraZoomRange(
-            MKMapView.CameraZoomRange(minCenterCoordinateDistance: 500,
-                                      maxCenterCoordinateDistance: 200_000),
-            animated: false
-        )
-
         mapView.delegate = self
         mapView.showsUserLocation = true
     }
