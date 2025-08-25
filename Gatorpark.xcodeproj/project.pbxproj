@@ -6,6 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		18C915CD2E5CB4FE00BCF182 /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = 18C915CC2E5CB4FE00BCF182 /* FirebaseAppCheck */; };
+		18C915CF2E5CB4FE00BCF182 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 18C915CE2E5CB4FE00BCF182 /* FirebaseAuth */; };
+		18C915D12E5CB4FE00BCF182 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 18C915D02E5CB4FE00BCF182 /* FirebaseCore */; };
+		18C915D32E5CB4FE00BCF182 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 18C915D22E5CB4FE00BCF182 /* FirebaseFirestore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		1849B5A12E5CA65300679A7F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -37,6 +44,20 @@
 			);
 			target = 1849B5892E5CA65000679A7F /* Gatorpark */;
 		};
+		1894D52F2E5CC853003E984B /* Exceptions for "Gatorpark" folder in "GatorparkTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"GoogleService-Info.plist",
+			);
+			target = 1849B59F2E5CA65300679A7F /* GatorparkTests */;
+		};
+		1894D5302E5CC853003E984B /* Exceptions for "Gatorpark" folder in "GatorparkUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"GoogleService-Info.plist",
+			);
+			target = 1849B5A92E5CA65300679A7F /* GatorparkUITests */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -44,6 +65,8 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				1849B5B22E5CA65300679A7F /* Exceptions for "Gatorpark" folder in "Gatorpark" target */,
+				1894D52F2E5CC853003E984B /* Exceptions for "Gatorpark" folder in "GatorparkTests" target */,
+				1894D5302E5CC853003E984B /* Exceptions for "Gatorpark" folder in "GatorparkUITests" target */,
 			);
 			path = Gatorpark;
 			sourceTree = "<group>";
@@ -65,6 +88,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				18C915CD2E5CB4FE00BCF182 /* FirebaseAppCheck in Frameworks */,
+				18C915D32E5CB4FE00BCF182 /* FirebaseFirestore in Frameworks */,
+				18C915D12E5CB4FE00BCF182 /* FirebaseCore in Frameworks */,
+				18C915CF2E5CB4FE00BCF182 /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -91,6 +118,7 @@
 				1849B58C2E5CA65000679A7F /* Gatorpark */,
 				1849B5A32E5CA65300679A7F /* GatorparkTests */,
 				1849B5AD2E5CA65300679A7F /* GatorparkUITests */,
+				18C915CA2E5CB42200BCF182 /* Frameworks */,
 				1849B58B2E5CA65000679A7F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -103,6 +131,13 @@
 				1849B5AA2E5CA65300679A7F /* GatorparkUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		18C915CA2E5CB42200BCF182 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -125,6 +160,10 @@
 			);
 			name = Gatorpark;
 			packageProductDependencies = (
+				18C915CC2E5CB4FE00BCF182 /* FirebaseAppCheck */,
+				18C915CE2E5CB4FE00BCF182 /* FirebaseAuth */,
+				18C915D02E5CB4FE00BCF182 /* FirebaseCore */,
+				18C915D22E5CB4FE00BCF182 /* FirebaseFirestore */,
 			);
 			productName = Gatorpark;
 			productReference = 1849B58A2E5CA65000679A7F /* Gatorpark.app */;
@@ -208,6 +247,9 @@
 			);
 			mainGroup = 1849B5812E5CA65000679A7F;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				18C915CB2E5CB4FE00BCF182 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1849B58B2E5CA65000679A7F /* Products */;
 			projectDirPath = "";
@@ -571,6 +613,40 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		18C915CB2E5CB4FE00BCF182 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		18C915CC2E5CB4FE00BCF182 /* FirebaseAppCheck */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 18C915CB2E5CB4FE00BCF182 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAppCheck;
+		};
+		18C915CE2E5CB4FE00BCF182 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 18C915CB2E5CB4FE00BCF182 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		18C915D02E5CB4FE00BCF182 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 18C915CB2E5CB4FE00BCF182 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		18C915D22E5CB4FE00BCF182 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 18C915CB2E5CB4FE00BCF182 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1849B5822E5CA65000679A7F /* Project object */;
 }

@@ -1,8 +1,8 @@
 //
 //  SceneDelegate.swift
-//  Gatorpark
+//  GatorPark-swift
 //
-//  Created by APPLE on 25/08/2025.
+//  Created by APPLE on 02/08/2025.
 //
 
 import UIKit
@@ -49,4 +49,3 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
 }
-
