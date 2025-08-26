@@ -187,14 +187,14 @@ class ViewController: UIViewController {
     private func addZoomButtons() {
         let zoomInButton = UIButton(type: .system)
         zoomInButton.setTitle("+", for: .normal)
-        zoomInButton.tintColor = .white
-        zoomInButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0.5, alpha: 1.0)
+        zoomInButton.tintColor = .black
+        zoomInButton.backgroundColor = .white
         zoomInButton.addTarget(self, action: #selector(zoomIn), for: .touchUpInside)
 
         let zoomOutButton = UIButton(type: .system)
         zoomOutButton.setTitle("-", for: .normal)
-        zoomOutButton.tintColor = .white
-        zoomOutButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0.5, alpha: 1.0)
+        zoomOutButton.tintColor = .black
+        zoomOutButton.backgroundColor = .white
         zoomOutButton.addTarget(self, action: #selector(zoomOut), for: .touchUpInside)
 
         let zoomInFrame = CGRect(x: view.bounds.width - 60, y: 120, width: 40, height: 40)
@@ -207,8 +207,8 @@ class ViewController: UIViewController {
     private func addNearestGarageButton() {
         let button = UIButton(type: .system)
         button.setTitle("Nearest", for: .normal)
-        button.tintColor = .white
-        button.backgroundColor = UIColor(red: 0, green: 0, blue: 0.5, alpha: 1.0)
+        button.tintColor = .black
+        button.backgroundColor = .white
         button.addTarget(self, action: #selector(findNearestGarage), for: .touchUpInside)
 
         let frame = CGRect(x: view.bounds.width - 90, y: 220, width: 70, height: 40)
@@ -217,8 +217,8 @@ class ViewController: UIViewController {
 
     private func addUserTrackingButton() {
         let trackingButton = MKUserTrackingButton(mapView: mapView)
-        trackingButton.tintColor = .white
-        trackingButton.backgroundColor = UIColor(red: 0, green: 0, blue: 0.5, alpha: 1.0)
+        trackingButton.tintColor = .black
+        trackingButton.backgroundColor = .white
 
         let frame = CGRect(x: view.bounds.width - 60, y: 270, width: 40, height: 40)
         view.addSubview(makeBlurContainer(for: trackingButton, frame: frame, cornerRadius: 8))
@@ -226,19 +226,32 @@ class ViewController: UIViewController {
 
     private func makeBlurContainer(for control: UIView, frame: CGRect, cornerRadius: CGFloat) -> UIView {
         if #available(iOS 13.0, *) {
-            let blur = UIVisualEffectView(effect: UIBlurEffect(style: .systemChromeMaterialDark))
-            blur.frame = frame
-            blur.layer.cornerRadius = cornerRadius
-            blur.clipsToBounds = true
-            blur.overrideUserInterfaceStyle = .dark
-            control.frame = blur.bounds
-            blur.contentView.addSubview(control)
-            return blur
+            let container = UIView(frame: frame)
+            container.backgroundColor = .white
+            container.layer.cornerRadius = cornerRadius
+            container.clipsToBounds = true
+            control.frame = container.bounds
+            control.backgroundColor = .white
+            container.addSubview(control)
+            return container
         } else {
             control.frame = frame
-            control.backgroundColor = UIColor(red: 0, green: 0, blue: 0.5, alpha: 1.0)
+            control.backgroundColor = .white
             control.layer.cornerRadius = cornerRadius
             return control
+        }
+    }
+
+    private func updateAnnotationColors() {
+        for annotation in mapView.annotations {
+            guard let view = mapView.view(for: annotation) as? MKMarkerAnnotationView,
+                  let garageAnnotation = annotation as? GarageAnnotation else { continue }
+            if garageAnnotation.garage.name == checkedInGarage {
+                view.markerTintColor = .systemGreen
+            } else {
+                let color = garageAnnotation.isFull ? UIColor.systemRed : UIColor.systemBlue
+                view.markerTintColor = color
+            }
         }
     }
 
@@ -314,6 +327,7 @@ class ViewController: UIViewController {
                     self?.checkedInGarage = garage.name
                     UIImpactFeedbackGenerator(style: .light).impactOccurred()
                     self?.scheduleCheckoutReminder(for: garage)
+                    self?.updateAnnotationColors()
                 case .failure(let error):
                     self?.showAlert(title: "Error", message: error.localizedDescription)
                 }
@@ -329,6 +343,7 @@ class ViewController: UIViewController {
                     self?.checkedInGarage = nil
                     UIImpactFeedbackGenerator(style: .light).impactOccurred()
                     self?.cancelCheckoutReminder()
+                    self?.updateAnnotationColors()
                 case .failure(let error):
                     self?.showAlert(title: "Error", message: error.localizedDescription)
                 }
@@ -389,16 +404,16 @@ extension ViewController: MKMapViewDelegate {
 
             let checkIn = UIButton(type: .system)
             checkIn.setTitle("In", for: .normal)
-            checkIn.tintColor = .systemGreen
-            checkIn.backgroundColor = UIColor.systemGreen.withAlphaComponent(0.2)
+            checkIn.tintColor = .black
+            checkIn.backgroundColor = .white
             checkIn.frame = CGRect(x: 0, y: 0, width: 60, height: 34)
             checkIn.layer.cornerRadius = 5
             view?.leftCalloutAccessoryView = checkIn
 
             let checkOut = UIButton(type: .system)
             checkOut.setTitle("Out", for: .normal)
-            checkOut.tintColor = .systemOrange
-            checkOut.backgroundColor = UIColor.systemOrange.withAlphaComponent(0.2)
+            checkOut.tintColor = .black
+            checkOut.backgroundColor = .white
             checkOut.frame = CGRect(x: 0, y: 0, width: 60, height: 34)
             checkOut.layer.cornerRadius = 5
             view?.rightCalloutAccessoryView = checkOut
@@ -406,9 +421,13 @@ extension ViewController: MKMapViewDelegate {
             view?.annotation = annotation
         }
         if let garageAnnotation = annotation as? GarageAnnotation {
-            // Reflect the garage availability with annotation color.
-            let color = garageAnnotation.isFull ? UIColor.systemRed : UIColor.systemBlue
-            view?.markerTintColor = color
+            // Reflect the garage availability or check-in status with annotation color.
+            if garageAnnotation.garage.name == checkedInGarage {
+                view?.markerTintColor = .systemGreen
+            } else {
+                let color = garageAnnotation.isFull ? UIColor.systemRed : UIColor.systemBlue
+                view?.markerTintColor = color
+            }
             view?.glyphText = "P"
             view?.glyphTintColor = .white
 
