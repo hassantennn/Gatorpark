@@ -121,10 +121,17 @@ class ViewController: UIViewController {
 
         if #available(iOS 13.0, *) {
             let textField = searchBar.searchTextField
-            textField.backgroundColor = .systemBackground
+            textField.backgroundColor = .white
+            textField.textColor = .black
+            textField.tintColor = .black
             textField.layer.cornerRadius = 10
             textField.layer.masksToBounds = true
+            if let leftView = textField.leftView as? UIImageView {
+                leftView.tintColor = .black
+            }
         }
+
+        searchBar.tintColor = .black
 
         searchBar.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(searchBar)
