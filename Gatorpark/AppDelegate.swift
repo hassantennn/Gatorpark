@@ -35,7 +35,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
-        notificationCenter.requestAuthorization(options: [.alert, .sound]) { _, _ in }
+        if UserDefaults.standard.bool(forKey: AppStorageKey.hasCompletedOnboarding) {
+            NotificationPermissionManager.shared.requestAuthorizationIfNeeded()
+        }
         notificationCenter.delegate = self
         return true
     }

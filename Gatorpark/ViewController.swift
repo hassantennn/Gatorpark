@@ -33,6 +33,7 @@ class ViewController: UIViewController {
     private var hasAnimatedInitialPins = false
     private let checkoutReminderID = "checkoutReminder"
     private let suggestionCellID = "SuggestionCell"
+    private var hasPresentedOnboarding = false
 
     // MARK: - Annotation
     class GarageAnnotation: NSObject, MKAnnotation {
@@ -85,6 +86,12 @@ class ViewController: UIViewController {
         addZoomButtons()
         addNearestGarageButton()
         addUserTrackingButton()
+        addAppInfoButton()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        presentOnboardingIfNeeded()
     }
 
     // MARK: - Setup
@@ -231,6 +238,16 @@ class ViewController: UIViewController {
         view.addSubview(makeBlurContainer(for: trackingButton, frame: frame, cornerRadius: 8))
     }
 
+    private func addAppInfoButton() {
+        let infoButton = UIButton(type: .infoLight)
+        infoButton.tintColor = .black
+        infoButton.accessibilityLabel = "App information"
+        infoButton.addTarget(self, action: #selector(presentAppInfo), for: .touchUpInside)
+
+        let frame = CGRect(x: view.bounds.width - 60, y: 70, width: 40, height: 40)
+        view.addSubview(makeBlurContainer(for: infoButton, frame: frame, cornerRadius: 8))
+    }
+
     private func makeBlurContainer(for control: UIView, frame: CGRect, cornerRadius: CGFloat) -> UIView {
         if #available(iOS 13.0, *) {
             let container = UIView(frame: frame)
@@ -363,6 +380,31 @@ class ViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
+
+    private func presentOnboardingIfNeeded() {
+        guard !hasPresentedOnboarding else { return }
+        hasPresentedOnboarding = true
+
+        let defaults = UserDefaults.standard
+        if defaults.bool(forKey: AppStorageKey.hasCompletedOnboarding) {
+            NotificationPermissionManager.shared.requestAuthorizationIfNeeded()
+            return
+        }
+
+        let onboarding = OnboardingViewController()
+        onboarding.modalPresentationStyle = .formSheet
+        onboarding.completion = {
+            NotificationPermissionManager.shared.requestAuthorizationIfNeeded()
+        }
+        present(onboarding, animated: true)
+    }
+
+    @objc private func presentAppInfo() {
+        let infoVC = AppInfoViewController()
+        let nav = UINavigationController(rootViewController: infoVC)
+        nav.modalPresentationStyle = .formSheet
+        present(nav, animated: true)
+    }
 }
 
 // MARK: - CLLocationManagerDelegate
@@ -375,6 +417,15 @@ extension ViewController: CLLocationManagerDelegate {
             mapView.setUserTrackingMode(.follow, animated: true)
         case .denied, .restricted:
             print("❌ Location denied")
+            let alert = UIAlertController(title: "Location Access Needed",
+                                          message: "Enable location in Settings to find nearby garages.",
+                                          preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            alert.addAction(UIAlertAction(title: "Open Settings", style: .default) { _ in
+                guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+                UIApplication.shared.open(url)
+            })
+            present(alert, animated: true)
         case .notDetermined:
             print("ℹ️ Location not determined yet")
         @unknown default:
