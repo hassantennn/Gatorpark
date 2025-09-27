@@ -1,5 +1,4 @@
 import UIKit
-import SafariServices
 
 final class AppInfoViewController: UIViewController {
     override func viewDidLoad() {
@@ -23,10 +22,12 @@ final class AppInfoViewController: UIViewController {
         summaryLabel.numberOfLines = 0
         summaryLabel.font = UIFont.preferredFont(forTextStyle: .body)
 
-        let privacyButton = makeLinkButton(title: "Privacy Policy",
-                                           urlString: "https://gatorpark.example.com/privacy")
-        let termsButton = makeLinkButton(title: "Terms of Use",
-                                         urlString: "https://gatorpark.example.com/terms")
+        let privacyButton = makeNavigationButton(title: "Privacy Policy") { [weak self] in
+            self?.showDocument(PrivacyPolicyViewController())
+        }
+        let termsButton = makeNavigationButton(title: "Terms of Use") { [weak self] in
+            self?.showDocument(TermsOfUseViewController())
+        }
 
         let supportButton = UIButton(type: .system)
         supportButton.setTitle("Contact Support", for: .normal)
@@ -52,20 +53,27 @@ final class AppInfoViewController: UIViewController {
         ])
     }
 
-    private func makeLinkButton(title: String, urlString: String) -> UIButton {
+    private func makeNavigationButton(title: String, action: @escaping () -> Void) -> UIButton {
         let button = UIButton(type: .system)
         button.setTitle(title, for: .normal)
         button.contentHorizontalAlignment = .leading
-        button.addAction(UIAction { [weak self] _ in
-            guard let url = URL(string: urlString) else { return }
-            let safari = SFSafariViewController(url: url)
-            self?.present(safari, animated: true)
+        button.addAction(UIAction { _ in
+            action()
         }, for: .touchUpInside)
         return button
     }
 
+    private func showDocument(_ viewController: UIViewController) {
+        if let navigationController {
+            navigationController.pushViewController(viewController, animated: true)
+        } else {
+            let nav = UINavigationController(rootViewController: viewController)
+            present(nav, animated: true)
+        }
+    }
+
     @objc private func contactSupport() {
-        guard let url = URL(string: "mailto:support@gatorpark.example.com") else { return }
+        guard let url = URL(string: "mailto:hassantariq233@gmail.com") else { return }
         UIApplication.shared.open(url)
     }
 
