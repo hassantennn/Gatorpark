@@ -33,7 +33,6 @@ class ViewController: UIViewController {
     private var hasAnimatedInitialPins = false
     private let checkoutReminderID = "checkoutReminder"
     private let suggestionCellID = "SuggestionCell"
-    private var hasPresentedOnboarding = false
 
     // MARK: - Annotation
     class GarageAnnotation: NSObject, MKAnnotation {
@@ -116,7 +115,7 @@ class ViewController: UIViewController {
         mapView.setRegion(region, animated: true)
 
         mapView.delegate = self
-        mapView.showsUserLocation = true
+        mapView.showsUserLocation = false
     }
 
     private func setupSearchBar() {
@@ -176,7 +175,6 @@ class ViewController: UIViewController {
     private func setupLocationManager() {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestWhenInUseAuthorization()
     }
 
     // MARK: - Helpers
@@ -246,6 +244,30 @@ class ViewController: UIViewController {
 
         let frame = CGRect(x: view.bounds.width - 60, y: 70, width: 40, height: 40)
         view.addSubview(makeBlurContainer(for: infoButton, frame: frame, cornerRadius: 8))
+    }
+
+    private func requestLocationAuthorizationIfNeeded() {
+        let status = currentLocationAuthorizationStatus()
+        switch status {
+        case .notDetermined:
+            locationManager.requestWhenInUseAuthorization()
+        case .authorizedAlways, .authorizedWhenInUse:
+            locationManager.startUpdatingLocation()
+            mapView.showsUserLocation = true
+            mapView.setUserTrackingMode(.follow, animated: true)
+        case .restricted, .denied:
+            mapView.showsUserLocation = false
+        @unknown default:
+            break
+        }
+    }
+
+    private func currentLocationAuthorizationStatus() -> CLAuthorizationStatus {
+        if #available(iOS 14.0, *) {
+            return locationManager.authorizationStatus
+        } else {
+            return CLLocationManager.authorizationStatus()
+        }
     }
 
     private func makeBlurContainer(for control: UIView, frame: CGRect, cornerRadius: CGFloat) -> UIView {
@@ -382,18 +404,20 @@ class ViewController: UIViewController {
     }
 
     private func presentOnboardingIfNeeded() {
-        guard !hasPresentedOnboarding else { return }
-        hasPresentedOnboarding = true
-
         let defaults = UserDefaults.standard
+
         if defaults.bool(forKey: AppStorageKey.hasCompletedOnboarding) {
+            requestLocationAuthorizationIfNeeded()
             NotificationPermissionManager.shared.requestAuthorizationIfNeeded()
             return
         }
 
+        guard !(presentedViewController is OnboardingViewController) else { return }
+
         let onboarding = OnboardingViewController()
         onboarding.modalPresentationStyle = .formSheet
-        onboarding.completion = {
+        onboarding.completion = { [weak self] in
+            self?.requestLocationAuthorizationIfNeeded()
             NotificationPermissionManager.shared.requestAuthorizationIfNeeded()
         }
         present(onboarding, animated: true)
@@ -410,13 +434,23 @@ class ViewController: UIViewController {
 // MARK: - CLLocationManagerDelegate
 extension ViewController: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        switch manager.authorizationStatus {
+        handleLocationAuthorizationChange(manager.authorizationStatus)
+    }
+
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        handleLocationAuthorizationChange(status)
+    }
+
+    private func handleLocationAuthorizationChange(_ status: CLAuthorizationStatus) {
+        switch status {
         case .authorizedAlways, .authorizedWhenInUse:
             print("✅ Location authorized")
-            manager.startUpdatingLocation()
+            locationManager.startUpdatingLocation()
+            mapView.showsUserLocation = true
             mapView.setUserTrackingMode(.follow, animated: true)
         case .denied, .restricted:
             print("❌ Location denied")
+            mapView.showsUserLocation = false
             let alert = UIAlertController(title: "Location Access Needed",
                                           message: "Enable location in Settings to find nearby garages.",
                                           preferredStyle: .alert)
@@ -428,6 +462,7 @@ extension ViewController: CLLocationManagerDelegate {
             present(alert, animated: true)
         case .notDetermined:
             print("ℹ️ Location not determined yet")
+            mapView.showsUserLocation = false
         @unknown default:
             break
         }

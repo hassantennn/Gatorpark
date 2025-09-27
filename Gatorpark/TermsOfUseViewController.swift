@@ -4,7 +4,7 @@ final class TermsOfUseViewController: UIViewController {
     private let termsText = """
 GatorPark Terms of Use
 
-Last updated: June 5, 2024
+Last updated: October 21, 2024
 
 By using GatorPark you agree to the following terms.
 
@@ -22,6 +22,9 @@ GatorPark provides parking information as-is. We are not responsible for inaccur
 
 5. Changes to These Terms
 We may update these terms from time to time. Continued use of the app after changes become effective constitutes acceptance of the revised terms.
+
+6. Account Deletion
+You can delete your account at any time from the App Info screen in the app. Deleting your account removes your parking history and notification reminders from our systems.
 
 Contact Us
 If you have questions about these terms, email hassantariq233@gmail.com.

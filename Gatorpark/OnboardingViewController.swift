@@ -44,7 +44,7 @@ final class OnboardingViewController: UIViewController {
         titleLabel.numberOfLines = 0
 
         let subtitleLabel = UILabel()
-        subtitleLabel.text = "Before you start, please review how we handle your data."
+        subtitleLabel.text = "Before you start, please review how we handle your data. We'll request location and notification access after you continue."
         subtitleLabel.font = UIFont.preferredFont(forTextStyle: .headline)
         subtitleLabel.numberOfLines = 0
 
