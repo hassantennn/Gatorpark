@@ -44,20 +44,6 @@
 			);
 			target = 1849B5892E5CA65000679A7F /* Gatorpark */;
 		};
-		1894D52F2E5CC853003E984B /* Exceptions for "Gatorpark" folder in "GatorparkTests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"GoogleService-Info.plist",
-			);
-			target = 1849B59F2E5CA65300679A7F /* GatorparkTests */;
-		};
-		1894D5302E5CC853003E984B /* Exceptions for "Gatorpark" folder in "GatorparkUITests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"GoogleService-Info.plist",
-			);
-			target = 1849B5A92E5CA65300679A7F /* GatorparkUITests */;
-		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -65,8 +51,6 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				1849B5B22E5CA65300679A7F /* Exceptions for "Gatorpark" folder in "Gatorpark" target */,
-				1894D52F2E5CC853003E984B /* Exceptions for "Gatorpark" folder in "GatorparkTests" target */,
-				1894D5302E5CC853003E984B /* Exceptions for "Gatorpark" folder in "GatorparkUITests" target */,
 			);
 			path = Gatorpark;
 			sourceTree = "<group>";
