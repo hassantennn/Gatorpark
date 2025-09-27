@@ -4,7 +4,7 @@ final class PrivacyPolicyViewController: UIViewController {
     private let privacyText = """
 GatorPark Privacy Policy
 
-Last updated: June 5, 2024
+Last updated: October 21, 2024
 
 GatorPark values your privacy. This policy explains how we collect, use, and protect your information.
 
@@ -19,7 +19,7 @@ Data Sharing
 We do not sell your personal information. We only share data with service providers who support app functionality and are bound to protect it.
 
 Your Choices
-You may revoke location permissions at any time from your device settings. You can also delete the app to remove local data stored on your device.
+You may revoke location permissions at any time from your device settings. You can delete your account from the App Info screen to remove your cloud data, or delete the app to remove local data stored on your device.
 
 Contact Us
 If you have any questions about this policy, email us at hassantariq233@gmail.com.
