@@ -4,53 +4,45 @@ import FirebaseCore
 import FirebaseAuth
 import FirebaseAppCheck
 
-#if DEBUG
-class DebugAppCheckProviderFactory: NSObject, AppCheckProviderFactory {
-    func createProvider(with app: FirebaseApp) -> AppCheckProvider? {
-        return AppCheckDebugProvider(app: app)
-    }
-}
-#endif
-
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     private let notificationCenter = UNUserNotificationCenter.current()
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        #if DEBUG
-        AppCheck.setAppCheckProviderFactory(DebugAppCheckProviderFactory())
-        #endif
-        
+
+        // App Check for TestFlight + App Store
+        let providerFactory = DeviceCheckProviderFactory()
+        AppCheck.setAppCheckProviderFactory(providerFactory)
+
+        // Firebase setup
         FirebaseApp.configure()
 
+        // Anonymous Auth
         if Auth.auth().currentUser == nil {
             Auth.auth().signInAnonymously { result, error in
                 if let error = error {
-                    // 🔎 Print the full error, not just localizedDescription
                     print("❌ Firebase Auth error:", error)
                 } else if let user = result?.user {
-                    print("✅ Signed in anonymously with UID: \(user.uid)")
+                    print("✅ Signed in anonymously. UID:", user.uid)
                 }
             }
         }
 
+        // Push notifications
         if UserDefaults.standard.bool(forKey: AppStorageKey.hasCompletedOnboarding) {
             NotificationPermissionManager.shared.requestAuthorizationIfNeeded()
         }
+
         notificationCenter.delegate = self
         return true
     }
 
-    // MARK: UISceneSession Lifecycle
     func application(_ application: UIApplication,
                      configurationForConnecting connectingSceneSession: UISceneSession,
                      options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
-    }
-
-    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
-        // Release any resources tied to discarded scenes if needed
+        UISceneConfiguration(name: "Default Configuration",
+                             sessionRole: connectingSceneSession.role)
     }
 }
 
